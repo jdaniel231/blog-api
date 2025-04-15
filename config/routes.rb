@@ -4,5 +4,14 @@ Rails.application.routes.draw do
                sessions: 'users/sessions',
                registrations: 'users/registrations'
              }
-  # Outras rotas da sua API
+  
+  namespace :api do
+    namespace :v1 do
+      resources :posts do
+        collection do
+          get :my_blog_posts
+        end
+      end
+    end
+  end
 end
