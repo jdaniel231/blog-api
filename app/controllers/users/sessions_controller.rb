@@ -4,9 +4,11 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(resource, _opts = {})
+    token = request.env['warden-jwt_auth.token'] # Obtém o token JWT gerado pelo Devise JWT
     render json: {
       status: { code: 200, message: 'Logged in successfully.' },
-      data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+      data: UserSerializer.new(resource).serializable_hash[:data][:attributes],
+      authorization: token
     }, status: :ok
   end
   
