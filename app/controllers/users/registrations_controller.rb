@@ -5,9 +5,11 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def respond_with(resource, _opts = {})
     if resource.persisted?
+      token = request.env['warden-jwt_auth.token'] # Obtém o token JWT gerado pelo Devise JWT
       render json: {
         status: { code: 200, message: 'Registered successfully.' },
-        data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+        data: UserSerializer.new(resource).serializable_hash[:data][:attributes],
+        authorization: token
       }, status: :ok
     else
       render json: {
