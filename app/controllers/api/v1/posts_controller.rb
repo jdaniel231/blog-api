@@ -1,27 +1,26 @@
 class Api::V1::PostsController < ApplicationController
-
   before_action :authenticate_user!
-  
+
   def index
     @posts = Post.all
-    render json: @posts
+    render :index, formats: :json
   end
 
   def my_blog_posts
     @posts = current_user.posts
-    render json: @posts
+    render :my_blog_posts, formats: :json
   end
 
   def new
     @post = Post.new
-    render json: @post
+    render :new, formats: :json
   end
 
   def create
     @post = Post.new(post_params)
     @post.user = current_user
     if @post.save
-      render json: @post, status: :created
+      render :show, formats: :json, status: :created
     else
       render json: @post.errors, status: :unprocessable_entity
     end
@@ -29,37 +28,27 @@ class Api::V1::PostsController < ApplicationController
 
   def edit
     @post = Post.find(params[:id])
-    render json: @post
+    render :edit, formats: :json
   end
 
   def update
     @post = Post.find(params[:id])
     if @post.update(post_params)
-      render json: @post
+      render :show, formats: :json
     else
       render json: @post.errors, status: :unprocessable_entity
     end
   end
 
-    def show
-      @post = Post.find(params[:id])
-      render json: {
-        id: @post.id,
-        title: @post.title,
-        description: @post.description,
-        user: {
-          id: @post.user_id,
-          email: @post.user.email
-        },
-        created_at: @post.created_at,
-        updated_at: @post.updated_at
-      }
-    end
+  def show
+    @post = Post.find(params[:id])
+    render :show, formats: :json
+  end
 
   def destroy
     @post = Post.find(params[:id])
     @post.destroy
-    render json: @post
+    render :show, formats: :json
   end
 
   private
@@ -67,5 +56,4 @@ class Api::V1::PostsController < ApplicationController
   def post_params
     params.require(:post).permit(:title, :description, :user_id)
   end
-
 end
