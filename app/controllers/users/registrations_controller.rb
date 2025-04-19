@@ -1,11 +1,15 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
-  
+
   private
+
+  def sign_up_params
+    params.require(:user).permit(:email, :password, :password_confirmation, :name)
+  end
 
   def respond_with(resource, _opts = {})
     if resource.persisted?
-      token = request.env['warden-jwt_auth.token'] # Obtém o token JWT gerado pelo Devise JWT
+      token = request.env['warden-jwt_auth.token']
       render json: {
         status: { code: 200, message: 'Registered successfully.' },
         data: UserSerializer.new(resource).serializable_hash[:data][:attributes],
