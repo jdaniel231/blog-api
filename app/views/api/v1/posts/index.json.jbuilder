@@ -6,5 +6,6 @@ json.array! @posts do |post|
   json.user do
     json.id post.user.id
     json.email post.user.email
+    json.name post.user.name
   end
 end
